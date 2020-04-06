@@ -4,7 +4,31 @@ author: "Sylvia Kinosian"
 output: html_document
 ---
 
-Code from Will Pearse: "Programming fror Biologists" course
+Plotting Pteridacae from Testo & Sundue (2016) 4k tree
+```{r}
+library(ape)
+library(phytools)
+
+# Bring in 4k tree
+fern_tree.4k <- read.nexus("4k.tre")
+
+# prune to just Pteridaceae and some outgroups
+pteridaceaeClade <- getMRCA(fern_tree.4k, tip = c("Coniogramme_wilsonii", "Pteris_altissima"))
+
+# extract this node to make sure its right.
+pteridaceaeClade.tre <- extract.clade(fern_tree.4k, pteridaceaeClade)
+
+# look at how many species are in the taxa
+length(pteridaceaeClade.tre$tip.label)
+# 589
+
+plotTree(pteridaceaeClade.tre,ftype="i",cex=0.6, fsize=0.4, offset=1, type="fan")
+
+# write.tree
+#write.tree(pteridaceaeClade.tre, "pteridaceaeClade.tre")
+```
+
+Code from Will Pearse: "Programming for Biologists" course
 
 Occurance data & predictions
 ```{r}
@@ -25,11 +49,10 @@ plot(r)
 
 # If you wanted to subset your data to only some parts of the world,
 # this would be the part to change
-#e <- extent(-170,170,-60,60)
+e <- extent(-170,170,-60,60)
 
 # Grab all of this out in data.frame format, if you wish
-#data <- data.frame(na.omit(extract(r, e)))
-data <- data.frame(na.omit(extract(r)))
+data <- data.frame(na.omit(extract(r, e)))
 
 # Load package
 library(rgbif)
@@ -77,28 +100,4 @@ predict(model, Filter(Negate(is.na), values(pred.raster)))
 
 # Plot where it's predicted to be
 plot(pred.raster)
-```
-
-Plotting Pteridacae from Testo & Sundue (2016) 4k tree
-```{r eval=FALSE}
-library(ape)
-library(phytools)
-
-# Bring in 4k tree
-fern_tree.4k <- read.nexus("4k.tre")
-
-# prune to just Pteridaceae and some outgroups
-pteridaceaeClade <- getMRCA(fern_tree.4k, tip = c("Coniogramme_wilsonii", "Pteris_altissima"))
-
-# extract this node to make sure its right.
-pteridaceaeClade.tre <- extract.clade(fern_tree.4k, pteridaceaeClade)
-
-# look at how many species are in the taxa
-length(pteridaceaeClade.tre$tip.label)
-# 589
-
-plotTree(pteridaceaeClade.tre,ftype="i",cex=0.6, fsize=0.4, offset=1, type="up")
-
-# write.tree
-write.tree(pteridaceaeClade.tre, "pteridaceaeClade.tre")
 ```
